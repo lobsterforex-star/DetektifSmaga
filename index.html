@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>Untitled</title>
+    
+
+  </head>
+    
+  <body>
+  <!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DETEKTIF SMAGA - macOS Edition</title>
+    
+    <!-- Import Font Inter dari Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * { 
+            box-sizing: border-box; 
+            margin: 0;
+            padding: 0;
+        }
+
+        body { 
+            /* Menggunakan Font Inter */
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
+            
+            /* Background hijau sesuai permintaan sebelumnya */
+            background-color: #01916d; 
+            
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            color: #1d1d1f; /* Warna teks standar Apple */
+        }
+        
+        /* Kontainer Utama Bergaya Jendela macOS */
+        .macos-window {
+            background-color: #ffffff; 
+            width: 90%; 
+            max-width: 420px; 
+            border-radius: 12px; 
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.4), 0 0 0 1px rgba(0,0,0,0.1); 
+            overflow: hidden; /* Agar sudut tetap melengkung walau ada title bar */
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Title Bar macOS */
+        .macos-titlebar {
+            background: linear-gradient(to bottom, #f6f6f6, #e0e0e0);
+            border-bottom: 1px solid #c9c9c9;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            position: relative;
+        }
+
+        /* Tombol Traffic Light (Merah, Kuning, Hijau) */
+        .macos-traffic-lights {
+            display: flex;
+            gap: 8px;
+            z-index: 2;
+        }
+        .traffic-light {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+        .close { background-color: #ff5f56; }
+        .minimize { background-color: #ffbd2e; }
+        .maximize { background-color: #27c93f; }
+
+        /* Judul di Title Bar */
+        .macos-title {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 600;
+            color: #4b4b4b;
+            left: 0;
+            pointer-events: none; /* Agar tidak mengganggu klik */
+        }
+
+        /* Area Konten Jendela */
+        .window-content {
+            padding: 30px 25px;
+            background: #fafafa;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- DESAIN HALAMAN INTRO --- */
+        #intro-screen {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1;
+        }
+        .app-icon {
+            font-size: 50px;
+            margin-bottom: 15px;
+        }
+        .title-intro {
+            font-size: 1.8em;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 5px;
+        }
+        .subtitle-intro {
+            font-size: 0.9em;
+            color: #86868b;
+            font-weight: 500;
+            margin-bottom: 40px;
+        }
+
+        /* Tombol Utama (Gaya macOS Blue) */
+        .btn-primary { 
+            background-color: #007aff; 
+            width: 100%; 
+            font-size: 1.1em; 
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Inter', sans-serif;
+        }
+        .btn-primary:active { background-color: #005bb5; transform: scale(0.98); }
+
+        /* --- DESAIN HALAMAN GAME --- */
+        #main-game {
+            display: none;
+            flex-grow: 1;
+            flex-direction: column;
+        }
+        
+        .header { 
+            display: flex; 
+            justify-content: space-between; 
+            font-weight: 600; 
+            font-size: 0.95em;
+            color: #86868b;
+            margin-bottom: 20px; 
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e5e5ea;
+        }
+
+        .news-card { 
+            background: #ffffff; 
+            border: 1px solid #e5e5ea;
+            padding: 25px 20px; 
+            margin-bottom: 25px; 
+            border-radius: 12px; 
+            font-size: 1.15em; 
+            line-height: 1.5;
+            min-height: 160px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            text-align: center;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        }
+
+        .btn-container { display: flex; gap: 15px; justify-content: center; }
+        
+        .btn-choice {
+            flex: 1; 
+            padding: 14px; 
+            border: none; 
+            border-radius: 10px; 
+            font-size: 1.05em; 
+            font-weight: 600; 
+            cursor: pointer; 
+            color: white; 
+            font-family: 'Inter', sans-serif;
+            transition: transform 0.1s, opacity 0.2s;
+        }
+        .btn-choice:active { transform: scale(0.96); opacity: 0.8; }
+        
+        /* Warna gaya Apple */
+        .btn-fakta { background-color: #34c759; }
+        .btn-hoax { background-color: #ff3b30; }
+        
+        /* Kotak Hasil */
+        .result-box { 
+            display: none; 
+            margin-top: 15px; 
+            padding: 20px; 
+            border-radius: 12px; 
+            font-size: 0.95em; 
+            text-align: left;
+            line-height: 1.5;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-box h3 { margin-bottom: 8px; font-size: 1.2em; font-weight: 700; }
+        
+        .correct { background-color: #e5f9eb; color: #107c41; border: 1px solid #c2f0d1; }
+        .wrong { background-color: #ffebe9; color: #d13438; border: 1px solid #ffc9c9; }
+        
+        .btn-next { margin-top: 20px; display: none; }
+    </style>
+</head>
+<body>
+
+<div class="macos-window">
+    <!-- Title Bar -->
+    <div class="macos-titlebar">
+        <div class="macos-traffic-lights">
+            <div class="traffic-light close"></div>
+            <div class="traffic-light minimize"></div>
+            <div class="traffic-light maximize"></div>
+        </div>
+        <div class="macos-title">Detektif App</div>
+    </div>
+
+    <!-- Konten Jendela -->
+    <div class="window-content">
+        
+        <!-- HALAMAN INTRO -->
+        <div id="intro-screen">
+            <div class="app-icon"></div>
+            <h1 class="title-intro">Detektif SMAGA</h1>
+            <p class="subtitle-intro">Powered by Lavetrin Engine</p>
+            <button class="btn-primary" onclick="mulaiGame()">Mulai Investigasi</button>
+        </div>
+
+        <!-- HALAMAN UTAMA GAME -->
+        <div id="main-game">
+            <div class="header">
+                <span>Soal: <span id="news-count">1/31</span></span>
+                <span>Skor: <span id="score" style="color: #007aff; font-weight: 700;">0</span></span>
+            </div>
+
+            <div class="news-card" id="news-text">
+                Memuat data...
+            </div>
+
+            <div class="btn-container" id="action-buttons">
+                <button class="btn-choice btn-fakta" onclick="cekJawaban(false)">Fakta</button>
+                <button class="btn-choice btn-hoax" onclick="cekJawaban(true)">Hoax</button>
+            </div>
+
+            <div class="result-box" id="result-box">
+                <h3 id="result-title">Hasil</h3>
+                <p id="result-explanation">Penjelasan akan muncul di sini.</p>
+                <button class="btn-primary btn-next" id="btn-next" onclick="beritaSelanjutnya()">Lanjut ke Kasus ➔</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    const databaseBerita = [
+        { teks: "Apakah permainan ini dikerjakan dengan sepenuh hati", isHoax: false, penjelasan: "FAKTA MUTLAK! Permainan ini tentu saja dikerjakan dengan sepenuh hati" },
+        { teks: "Minum air es setelah makan bisa membekukan lemak dalam perut.", isHoax: true, penjelasan: "Suhu tubuh kita akan secara otomatis menetralkan suhu makanan/minuman yang masuk. Lemak tidak akan membeku di dalam tubuh." },
+        { teks: "Menggunakan ponsel di SPBU saat mengisi bensin bisa memicu ledakan.", isHoax: true, penjelasan: "Ponsel tidak memancarkan energi panas yang cukup untuk memicu api. Larangan ini agar pengendara tidak lengah." },
+        { teks: "Gunung Everest bukanlah gunung tertinggi dari pusat Bumi.", isHoax: false, penjelasan: "Fakta! Karena bentuk bumi agak lonjong di ekuator, puncak Gunung Chimborazo di Ekuador sebenarnya lebih jauh dari inti bumi." },
+        { teks: "Ketik angka '1' di kolom komentar untuk melihat gambar ini bergerak.", isHoax: true, penjelasan: "Ini adalah trik penipuan interaksi (engagement bait). Komentar tidak bisa mengubah gambar diam menjadi animasi." },
+        { teks: "Tidur dengan kipas angin menyala semalaman di ruangan tertutup bisa menyebabkan kematian.", isHoax: true, penjelasan: "Ini mitos 'Fan Death'. Kipas angin tidak menghilangkan oksigen atau menurunkan suhu tubuh secara drastis hingga mematikan." },
+        { teks: "Manusia hanya menggunakan 10% dari kapasitas otaknya.", isHoax: true, penjelasan: "Mitos! Pemindaian otak menunjukkan manusia menggunakan hampir seluruh bagian otak, bahkan saat sedang tidur." },
+        { teks: "Gurita memiliki tiga buah jantung.", isHoax: false, penjelasan: "Fakta! Dua jantung memompa darah ke insang, dan satu jantung memompa darah ke seluruh tubuh." },
+        { teks: "Madu asli tidak akan pernah basi atau kadaluarsa.", isHoax: false, penjelasan: "Fakta! Karena kadar airnya sangat rendah dan sangat asam, bakteri tidak bisa hidup di dalam madu." },
+        { teks: "Banteng akan marah dan menyerang jika melihat warna merah.", isHoax: true, penjelasan: "Banteng sebenarnya buta warna parsial. Mereka menyerang karena gerakan kain matador yang dikibas-kibaskan, bukan karena warnanya." },
+        { teks: "Makan wortel bisa membuat manusia melihat dalam gelap gulita.", isHoax: true, penjelasan: "Mitos yang dibuat Inggris saat Perang Dunia II. Wortel bagus untuk mata, tapi tidak bisa memberi 'night vision'." },
+        { teks: "Petir tidak pernah menyambar tempat yang sama dua kali.", isHoax: true, penjelasan: "Sangat Hoax. Gedung tinggi seperti Empire State Building bisa tersambar petir puluhan kali dalam setahun." },
+        { teks: "Pisang adalah jenis buah beri, sedangkan stroberi bukanlah beri.", isHoax: false, penjelasan: "Fakta unik botani! Secara ilmiah, pisang, tomat, dan anggur adalah beri, sedangkan stroberi bukan." },
+        { teks: "Membunyikan/mengkretekkan sendi jari terus-menerus menyebabkan radang sendi (arthritis).", isHoax: true, penjelasan: "Suara itu hanya gas yang keluar dari cairan sendi. Secara medis tidak terbukti menyebabkan radang sendi." },
+        { teks: "Sidik lidah setiap manusia itu unik dan berbeda-beda, sama seperti sidik jari.", isHoax: false, penjelasan: "Fakta! Tidak ada dua orang yang memiliki tekstur dan pola lidah yang benar-benar sama." },
+        { teks: "Rambut dan kuku manusia masih terus tumbuh beberapa hari setelah meninggal.", isHoax: true, penjelasan: "Hoax yang mengerikan. Sebenarnya, kulit manusia menyusut setelah meninggal, sehingga rambut dan kuku 'terlihat' lebih panjang." },
+        { teks: "Awan terlihat ringan, tapi rata-rata berat satu awan cumulus bisa mencapai 500.000 kilogram.", isHoax: false, penjelasan: "Fakta! Berat itu berasal dari jutaan liter tetesan air mikroskopis yang mengambang di udara." },
+        { teks: "Kelelawar itu sebenarnya buta.", isHoax: true, penjelasan: "Kelelawar tidak buta, mereka bisa melihat dengan baik. Hanya saja di malam hari, mereka lebih mengandalkan sonar (ekolokasi)." },
+        { teks: "Tomat sebenarnya masuk dalam kategori buah, bukan sayuran.", isHoax: false, penjelasan: "Fakta botani! Sayuran adalah akar, batang, atau daun, sedangkan tomat tumbuh dari bunga dan berbiji, sehingga ia adalah buah." },
+        { teks: "Koin yang dijatuhkan dari gedung sangat tinggi bisa membunuh orang di bawahnya.", isHoax: true, penjelasan: "Hoax. Koin terlalu ringan dan hambatan udara (kecepatan terminal) mencegahnya jatuh dengan kecepatan mematikan." },
+        { teks: "DNA manusia sekitar 50% mirip dengan DNA pisang.", isHoax: false, penjelasan: "Fakta! Kita berbagi banyak gen dasar yang sama dengan pisang untuk fungsi seluler (seperti membelah sel)." },
+        { teks: "Di planet Venus, waktu satu hari lebih lama daripada waktu satu tahun.", isHoax: false, penjelasan: "Fakta! Venus berputar pada porosnya sangat lambat (243 hari Bumi), tapi mengelilingi matahari lebih cepat (225 hari Bumi)." },
+        { teks: "Ikan mas koki hanya memiliki ingatan selama 3 detik.", isHoax: true, penjelasan: "Mitos kasihan! Penelitian membuktikan ikan mas koki bisa mengingat banyak hal hingga berbulan-bulan." },
+        { teks: "Bunglon mengubah warna kulit semata-mata untuk menyamar dengan lingkungannya.", isHoax: true, penjelasan: "Sebagian besar perubahan warna bunglon adalah untuk mengatur suhu tubuh dan berkomunikasi dengan bunglon lain, bukan kamuflase." },
+        { teks: "Tulang paha manusia jauh lebih kuat daripada beton dengan berat yang sama.", isHoax: false, penjelasan: "Fakta! Struktur tulang manusia luar biasa kuat dan sanggup menahan tekanan yang sangat besar." },
+        { teks: "Kucing selalu mendarat dengan kakinya dan tidak akan terluka jika jatuh dari ketinggian berapapun.", isHoax: true, penjelasan: "Kucing memang punya 'refleks meluruskan diri', tapi jatuh dari ketinggian tetap sangat berbahaya dan mematikan bagi mereka." },
+        { teks: "Air di toilet Australia berputar ke arah yang berlawanan karena berada di Belahan Bumi Selatan.", isHoax: true, penjelasan: "Efek Coriolis memang ada di bumi, tapi tidak cukup kuat untuk mempengaruhi pusaran air di toilet. Itu tergantung desain toiletnya." },
+        { teks: "Beruang kutub sebenarnya memiliki kulit berwarna hitam.", isHoax: false, penjelasan: "Fakta! Bulu mereka transparan (terlihat putih karena pantulan cahaya salju), tapi kulit asli di bawahnya berwarna hitam untuk menyerap panas matahari." },
+        { teks: "Memegang katak atau kodok bisa menyebabkan kutil di tanganmu.", isHoax: true, penjelasan: "Hoax! Kutil pada manusia disebabkan oleh virus (HPV), tidak ada hubungannya dengan benjolan pada kulit kodok." },
+        { teks: "Gajah adalah satu-satunya mamalia darat yang tidak bisa melompat.", isHoax: false, penjelasan: "Fakta! Tubuh mereka terlalu berat dan struktur kaki mereka tidak dirancang untuk mendorong tubuh lepas dari tanah." },
+        { teks: "Keringat sebenarnya tidak memiliki bau.", isHoax: false, penjelasan: "Fakta! Keringat 100% tidak berbau. Bau badan muncul ketika keringat bercampur dengan bakteri yang hidup di kulit kita." }
+    ];
+
+    let beritaSekarang = 0;
+    let skor = 0;
+
+    const introScreen = document.getElementById("intro-screen");
+    const mainGame = document.getElementById("main-game");
+    const newsText = document.getElementById("news-text");
+    const newsCount = document.getElementById("news-count");
+    const scoreText = document.getElementById("score");
+    const actionButtons = document.getElementById("action-buttons");
+    const resultBox = document.getElementById("result-box");
+    const resultTitle = document.getElementById("result-title");
+    const resultExplanation = document.getElementById("result-explanation");
+    const btnNext = document.getElementById("btn-next");
+
+    function mulaiGame() {
+        introScreen.style.display = "none";
+        mainGame.style.display = "flex";
+        tampilkanBerita();
+    }
+
+    function tampilkanBerita() {
+        if (beritaSekarang < databaseBerita.length) {
+            newsText.innerHTML = `"${databaseBerita[beritaSekarang].teks}"`;
+            newsCount.innerText = `${beritaSekarang + 1}/${databaseBerita.length}`;
+            
+            resultBox.style.display = "none";
+            btnNext.style.display = "none";
+            actionButtons.style.display = "flex";
+        } else {
+            newsText.innerHTML = "🎉 <strong>Game Selesai!</strong><br><br>Selamat, Insting Detektifmu Luar Biasa!";
+            actionButtons.style.display = "none";
+            resultBox.style.display = "block";
+            resultBox.className = "result-box correct";
+            resultTitle.innerText = "Hasil Akhir";
+            resultExplanation.innerText = `Skor akhir kamu adalah ${skor} dari ${databaseBerita.length * 10}. \n\nBagikan skormu ke teman-teman dan lihat apakah mereka bisa mengalahkanmu!`;
+            btnNext.style.display = "none";
+            newsCount.innerText = "-";
+        }
+    }
+
+    function cekJawaban(jawabanPemain) {
+        const berita = databaseBerita[beritaSekarang];
+        const jawabanBenar = berita.isHoax;
+
+        actionButtons.style.display = "none"; 
+        resultBox.style.display = "block";    
+        btnNext.style.display = "block";      
+
+        if (jawabanPemain === jawabanBenar) {
+            skor += 10;
+            scoreText.innerText = skor;
+            resultBox.className = "result-box correct";
+            resultTitle.innerText = "✅ Tepat Sekali!";
+        } else {
+            resultBox.className = "result-box wrong";
+            resultTitle.innerText = "❌ Salah Tebak!";
+        }
+
+        resultExplanation.innerText = berita.penjelasan;
+    }
+
+    function beritaSelanjutnya() {
+        beritaSekarang++;
+        tampilkanBerita();
+    }
+</script>
+
+</body>
+</html>
+    
+  </body>
+  
+</html>
